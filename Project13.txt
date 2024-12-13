@@ -1,0 +1,98 @@
+#include <iostream>
+#include <string>
+#include <array>
+
+class Date {
+private:
+    int month;
+    int day;
+    int year;
+
+   
+    static const std::array<std::string, 12> monthNames;
+
+    
+    bool isleapyear(int y) const {
+        return (y % 4 == 0 && y % 100 != 0) || (y % 400 == 0);
+    }
+
+    
+    int daysinMonth(int m, int y) const {
+        if (m == 2) // February
+            return isleapyear(y) ? 29 : 28;
+        else if (m == 4 || m == 6 || m == 9 || m == 11) // April, June, September, November
+            return 30;
+        else
+            return 31;
+    }
+
+public:
+   
+    Date(int m, int d, int y) : month(m), day(d), year(y) {
+        if (!isValidDate()) {
+            std::cerr << "Invalid date provided. Setting to default date 1/1/2000.\n";
+            month = 1;
+            day = 1;
+            year = 2000;
+        }
+    }
+
+    
+    bool isValidDate() const {
+        if (month < 1 || month > 12)
+            return false;
+        if (day < 1 || day > daysinMonth(month, year))
+            return false;
+        return true;
+    }
+
+   
+    void printNormal() const {
+        std::cout << (month < 10 ? "0" : "") << month << '/'
+                  << (day < 10 ? "0" : "") << day << '/'
+                  << (year % 100 < 10 ? "0" : "") << year % 100 << '\n';
+    }
+
+ 
+    void printWeird1() const {
+        std::cout << monthNames[month - 1] << ' ' << day << ", " << year << '\n';
+    }
+
+    
+    void printWerid2() const {
+        std::cout << day << ' ' << monthNames[month - 1] << ' ' << year << '\n';
+    }
+};
+
+
+const std::array<std::string, 12> Date::monthNames = {
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"
+};
+
+int main() {
+    int month, day, year;
+
+    std::cout << "Enter month (1-12): ";
+    std::cin >> month;
+
+
+    std::cout << "Enter day: ";
+    std::cin >> day;
+
+    std::cout << "Enter year: ";
+    std::cin >> year;
+
+    Date date(month, day, year);
+
+    std::cout << "Normal format: ";
+    date.printNormal();
+
+    std::cout << "Weird1 format: ";
+    date.printWeird1();
+
+    std::cout << "Weird2 format: ";
+    date.printWeird2();
+
+    return 0;
+}
